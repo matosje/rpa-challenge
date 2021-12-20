@@ -1,27 +1,23 @@
 # -*- coding: utf-8 -*-
 """
-Spyder Editor.
+RPA Challenge.
 
-This is a temporary script file.
+Lauch RPA Challenge .
 """
 
-from typing import Generator
+from selenium import webdriver
+from selenium.webdriver import ActionChains
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
+browser = webdriver.Firefox()
+browser.get('https://rpachallenge.azurewebsites.net/')
 
-def fib(n: int) -> Generator[int, None, None]:
-    """
-    Return Fibonacci sequence.
+btnDownloadExcel = WebDriverWait(browser, 10).until(
+    EC.presence_of_element_located((By.XPATH, '/html/body/app-root/div[2]/app-rpa1/div/div[1]/div[6]/a'))
+)
 
-    Recieves a number and returns its repective fibonacci sequence
-    """
-    yield 0 # Const -- First value of Fibonacci's sequence
-    yield 1 # Const -- Second value of Fibonacci's sequence
-
-    last: int = 0
-    next: int = 1
-    for _ in range(1, n):
-        last, next = next, last + next
-        yield next
-
-
-result = fib(10)
+browserAction = ActionChains(browser)
+browserAction.move_to_element(btnDownloadExcel).click().perform()
