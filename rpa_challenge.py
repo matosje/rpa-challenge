@@ -2,7 +2,7 @@
 """
 RPA Challenge.
 
-Lauch RPA Challenge .
+Lauch RPA Challenge, download the excel file
 """
 
 from selenium import webdriver
