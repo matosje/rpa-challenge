@@ -81,21 +81,29 @@ def set_field(_browser_instance: webdriver, _data: any, _col: int):
     Set field that matches the columns' numbering.
     """
     if _col == 0:
-        _element = FLD_FIRST_NAME
+        _element = '//*[@ng-reflect-name="labelFirstName"]'
     elif _col == 1:
-        _element = FLD_LAST_NAME
+        _element = '//*[@ng-reflect-name="labelLastName"]'
     elif _col == 2:
-        _element = FLD_COMPANY_NAME
+        _element = '//*[@ng-reflect-name="labelCompanyName"]'
     elif _col == 3:
-        _element = FLD_ROLE
+        _element = '//*[@ng-reflect-name="labelRole"]'
     elif _col == 4:
-        _element = FLD_ADDRESS
+        _element = '//*[@ng-reflect-name="labelAddress"]'
     elif _col == 5:
-        _element = FLD_EMAIL
+        _element = '//*[@ng-reflect-name="labelEmail"]'
     elif _col == 6:
-        _element = FLD_PHONE
+        _element = '//*[@ng-reflect-name="labelPhone"]'
 
-    _browser_instance.find_element(By.XPATH, _element).send_keys(_data)
+    _browser_instance.execute_script(
+        f'''document.evaluate(
+            '{_element}',
+            document,
+            null,
+            XPathResult.FIRST_ORDERED_NODE_TYPE,
+            null
+            ).singleNodeValue.value = "{_data}"'''
+        )
 
 
 MAIN_URL = config('RPA_URL')
@@ -106,14 +114,6 @@ BTN_DOWNLOAD_EXCEL = config('BTN_DOWNLOAD_EXCEL')
 BTN_START = config('BTN_START')
 BTN_SUBMIT = config('BTN_SUBMIT')
 
-FLD_FIRST_NAME = config('FLD_FIRST_NAME')
-FLD_LAST_NAME = config('FLD_LAST_NAME')
-FLD_COMPANY_NAME = config('FLD_COMPANY_NAME')
-FLD_ROLE = config('FLD_ROLE')
-FLD_ADDRESS = config('FLD_ADDRESS')
-FLD_EMAIL = config('FLD_EMAIL')
-FLD_PHONE = config('FLD_PHONE')
-
 
 browser = open_browser(MAIN_URL)
 wait_for_element(browser, 10, BTN_DOWNLOAD_EXCEL)
@@ -122,9 +122,25 @@ download_file(API_URL, WB_NAME)
 
 wbRows = read_workbook(WB_NAME, None, 2, None, None, 7, True)
 
-browser.find_element(By.XPATH, BTN_START).click()
+browser.execute_script(
+    f'''document.evaluate(
+        '{BTN_START}',
+        document,
+        null,
+        XPathResult.FIRST_ORDERED_NODE_TYPE,
+        null
+        ).singleNodeValue.click()'''
+    )
 
 for row in wbRows:
     for colNumber, cellData in enumerate(row):
         set_field(browser, cellData, colNumber)
-    browser.find_element(By.XPATH, BTN_SUBMIT).click()
+    browser.execute_script(
+        f'''document.evaluate(
+            '{BTN_SUBMIT}',
+            document,
+            null,
+            XPathResult.FIRST_ORDERED_NODE_TYPE,
+            null
+            ).singleNodeValue.click()'''
+        )
